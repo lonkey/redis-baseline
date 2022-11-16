@@ -19,7 +19,7 @@ $ inspec exec https://github.com/lonkey/redis-baseline
 
 ## License and Author
 
-- Author:: Lukas Zorn <github@lukaszorn.de>
+- Author: Lukas Zorn <github@lukaszorn.de>
 
 - Copyright 2022, Lukas Zorn
 
