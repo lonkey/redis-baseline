@@ -147,3 +147,6 @@ build-iPhoneSimulator/
 # .rubocop-https?--*
 
 # End of https://www.toptal.com/developers/gitignore/api/jetbrains+all,ruby
+
+# Progress Chef InSpec:
+inspec.lock

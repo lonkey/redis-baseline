@@ -8,5 +8,5 @@ summary: Test suite for best practice hardening of Redis Community Edition
 inspec_version: '>= 4.56.17'
 version: 1.0.0
 supports:
+  - platform-name: debian
   - platform-name: ubuntu
-    release: 22.10
