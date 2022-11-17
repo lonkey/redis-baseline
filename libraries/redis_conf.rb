@@ -36,6 +36,11 @@ module Inspec::Resources
       @content = read_file_content(@conf_path)
     end
 
+    def content
+      return @content if defined?(@content)
+      @content = read_file_content(@conf_path)
+    end
+
     def method_missing(name)
       param = read_params[name.to_s]
       return param[0] if param.is_a?(Array) && (param.length == 1)

@@ -10,3 +10,28 @@ version: 1.0.0
 supports:
   - platform-name: debian
   - platform-name: ubuntu
+inputs:
+  - name: redis_custom_user
+    description: The Redis user must be an unprivileged user
+    type: string
+  - name: redis_custom_group
+    description: The Redis user group be an unprivileged group
+    type: string
+  - name: redis_custom_admin_user
+    description: Redis must have a custom admin user account
+    type: string
+  - name: redis_custom_minimal_user
+    description: Redis must have a custom minimal user account
+    type: string
+  - name: redis_custom_conf_dir
+    description: The Redis configuration files may be located in a different directory
+    type: string
+  - name: redis_custom_data_dir
+    description: The Redis database files may be located in a different directory
+    type: string
+  - name: redis_custom_acl_file
+    description: The Redis ACL file may have a different name
+    type: string
+  - name: redis_custom_conf_file
+    description: The Redis configuration file may have a different name
+    type: string
