@@ -295,6 +295,7 @@ control 'redis-a49' do
   end
 end
 
+# Source: https://github.com/dev-sec/linux-baseline/blob/666e7092534bc29554700c21c6b8864cbc45eeae/controls/package_spec.rb#L78
 control 'redis-a52' do
   impact 1.0
   title 'Alle kritischen Parameter, Ereignisse und Betriebszustände müssen überwacht werden'
