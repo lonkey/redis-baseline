@@ -48,9 +48,10 @@ end
 control 'redis-a2' do
   impact 1.0
   title 'Nicht benötigte Plug-ins/Software-Erweiterungen und Funktionen müssen deinstalliert oder deaktiviert werden'
-  desc 'Laden aller Plug-ins deaktivieren'
+  desc 'Laden aller Plug-ins und Zusatzkonfigurationen deaktivieren'
   describe redis_conf("#{redis_conf_file}") do
     its('loadmodule') { should eq nil }
+    its('include') { should eq nil }
   end
 end
 
@@ -152,9 +153,10 @@ end
 control 'redis-a20' do
   impact 1.0
   title 'Die Anzahl der gleichzeitigen Verbindungen zur Datenbank muss begrenzt werden'
-  desc 'TCP-Keepalive konfigurieren'
+  desc 'TCP-Keepalive und Timeout für TLS-Session-Cache konfigurieren'
   describe redis_conf("#{redis_conf_file}") do
     its('tcp-keepalive') { should eq '300' }
+    its('tls-session-cache-timeout') { should eq '300' }
   end
 end
 
@@ -340,9 +342,9 @@ end
 control 'redis-a59' do
   impact 1.0
   title 'Das für den Schlüsselaustausch verwendete Verfahren muss sicher sein'
-  desc 'DH-Params deaktivieren'
+  desc 'DH-Params aktivieren'
   describe redis_conf("#{redis_conf_file}") do
-    its('tls-dh-params-file ') { should eq nil }
+    its('tls-dh-params-file ') { should eq 'redis-4096.dh' }
   end
 end
 
@@ -485,10 +487,11 @@ end
 control 'redis-a76' do
   impact 1.0
   title 'Die Datenbankanwendung darf nicht an 0.0.0.0 bzw. [::] gebunden werden'
-  desc 'IP-Bindung konfigurieren'
+  desc 'IP-Bindung konfigurieren und geschützten Modus aktivieren'
   describe redis_conf("#{redis_conf_file}") do
     its('bind') { should_not match(/0\.0\.0\.0(\s|$)/) }
     its('bind') { should_not match(/::(\s|$)/) }
+    its('protected-mode') { should eq 'yes' }
   end
 end
 
