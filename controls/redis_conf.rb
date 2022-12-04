@@ -347,7 +347,7 @@ control 'redis-a59' do
   title 'Das für den Schlüsselaustausch verwendete Verfahren muss sicher sein'
   desc 'DH-Params aktivieren'
   describe redis_conf("#{redis_conf_file}") do
-    its('tls-dh-params-file ') { should eq 'redis-4096.dh' }
+    its('tls-dh-params-file') { should eq 'redis-4096.dh' }
   end
 end
 
