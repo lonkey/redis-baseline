@@ -347,7 +347,7 @@ control 'redis-a59' do
   title 'Das für den Schlüsselaustausch verwendete Verfahren muss sicher sein'
   desc 'DH-Params aktivieren'
   describe redis_conf("#{redis_conf_file}") do
-    its('tls-dh-params-file') { should eq 'redis-4096.dh' }
+    its('tls-dh-params-file') { should eq "#{redis_custom_conf_dir}/redis-4096.dh" }
   end
 end
 
@@ -367,9 +367,9 @@ control 'redis-a62' do
   title 'Selbstsignierte Zertifikate dürfen für eine verschlüsselte Kommunikation nicht verwendet und akzeptiert werden'
   desc 'TLS-Zertifikate konfigurieren'
   describe redis_conf("#{redis_conf_file}") do
-    its('tls-cert-file') { should eq 'redis.crt' }
-    its('tls-key-file') { should eq 'redis.key' }
-    its('tls-ca-cert-file') { should eq 'ca.crt' }
+    its('tls-cert-file') { should eq "#{redis_custom_conf_dir}/redis.crt" }
+    its('tls-key-file') { should eq "#{redis_custom_conf_dir}/redis.key" }
+    its('tls-ca-cert-file') { should eq "#{redis_custom_conf_dir}/ca.crt" }
   end
 end
 
