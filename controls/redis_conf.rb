@@ -22,11 +22,14 @@ redis_custom_admin_user = input('redis_custom_admin_user', value: 'admin', descr
 redis_custom_minimal_user = input('redis_custom_minimal_user', value: 'minimal', description: 'Redis must have a custom minimal user account')
 redis_custom_conf_dir = input('redis_custom_conf_dir', value: '/etc/redis', description: 'The Redis configuration files may be located in a different directory')
 redis_custom_data_dir = input('redis_custom_data_dir', value: '/var/lib/redis', description: 'The Redis database files may be located in a different directory')
+redis_custom_log_dir = input('redis_custom_log_dir', value: '/var/log/redis', description: 'The Redis log files may be located in a different directory')
 redis_custom_acl_file = input('redis_custom_acl_file', value: 'users.acl', description: 'The Redis ACL file may have a different name')
 redis_custom_conf_file = input('redis_custom_conf_file', value: 'redis.conf', description: 'The Redis configuration file may have a different name')
+redis_custom_log_file = input('redis_custom_log_file', value: 'redis-server.log', description: 'The Redis log file may have a different name')
 
 redis_acl_file = "#{redis_custom_conf_dir}/#{redis_custom_acl_file}"
 redis_conf_file = "#{redis_custom_conf_dir}/#{redis_custom_conf_file}"
+redis_log_file = "#{redis_custom_log_dir}/#{redis_custom_log_file}"
 
 only_if('Die Redis-ACL-Datei muss vorhanden sein') do
   file(redis_acl_file).exist?
@@ -59,7 +62,7 @@ control 'redis-a3' do
   impact 1.0
   title 'Der Aktualisierungsmechanismus muss sicher konfiguriert werden'
   desc 'Überprüfung der Eigentümerschaft sowie der Berechtigungen aller Verzeichnisse und Dateien von APT'
-  Dir.glob("/etc/apt/**/*").each do |entry|
+  command("find /etc/apt/ -not -type l").stdout.split.each do |entry|
     if File.directory?(entry)
       describe file(entry) do
         it { should be_directory }
@@ -293,7 +296,7 @@ control 'redis-a49' do
   title 'Audit-Protokolle müssen in einem Verzeichnis mit leicht zuzuordnenden Dateinamen gespeichert werden'
   desc 'Log-Speicherpfad'
   describe redis_conf("#{redis_conf_file}") do
-    its('logfile') { should eq '/var/log/redis/redis-server.log' }
+    its('logfile') { should eq "#{redis_log_file}" }
   end
 end
 
@@ -344,7 +347,7 @@ control 'redis-a59' do
   title 'Das für den Schlüsselaustausch verwendete Verfahren muss sicher sein'
   desc 'DH-Params aktivieren'
   describe redis_conf("#{redis_conf_file}") do
-    its('tls-dh-params-file ') { should eq 'redis-4096.dh' }
+    its('tls-dh-params-file') { should eq "#{redis_custom_conf_dir}/redis-4096.dh" }
   end
 end
 
@@ -364,9 +367,9 @@ control 'redis-a62' do
   title 'Selbstsignierte Zertifikate dürfen für eine verschlüsselte Kommunikation nicht verwendet und akzeptiert werden'
   desc 'TLS-Zertifikate konfigurieren'
   describe redis_conf("#{redis_conf_file}") do
-    its('tls-cert-file') { should eq 'redis.crt' }
-    its('tls-key-file') { should eq 'redis.key' }
-    its('tls-ca-cert-file') { should eq 'ca.crt' }
+    its('tls-cert-file') { should eq "#{redis_custom_conf_dir}/redis.crt" }
+    its('tls-key-file') { should eq "#{redis_custom_conf_dir}/redis.key" }
+    its('tls-ca-cert-file') { should eq "#{redis_custom_conf_dir}/ca.crt" }
   end
 end
 
@@ -377,7 +380,7 @@ control 'redis-a65' do
   describe redis_conf("#{redis_conf_file}") do
     its('dir') { should eq "#{redis_custom_data_dir}" }
   end
-  Dir.glob("#{redis_custom_conf_dir}/**/*").each do |entry|
+  command("find #{redis_custom_conf_dir} -not -type l").stdout.split.each do |entry|
     if File.directory?(entry)
       describe file(entry) do
         it { should be_directory }
@@ -400,7 +403,7 @@ control 'redis-a65' do
       end
     end
   end
-  Dir.glob("#{redis_custom_data_dir}/**/*").each do |entry|
+  command("find #{redis_custom_data_dir} -not -type l").stdout.split.each do |entry|
     if File.directory?(entry)
       describe file(entry) do
         it { should be_directory }
@@ -429,7 +432,7 @@ control 'redis-a66' do
   impact 1.0
   title 'Die Zugriffsrechte auf Protokollierungsdaten müssen restriktiv vergeben werden'
   desc 'Überprüfung der Eigentümerschaft sowie der Berechtigungen aller Verzeichnisse und Dateien von /var/log/redis'
-  Dir.glob("/var/log/redis/**/*").each do |entry|
+  command("find #{redis_custom_log_dir} -not -type l").stdout.split.each do |entry|
     if File.directory?(entry)
       describe file(entry) do
         it { should be_directory }
